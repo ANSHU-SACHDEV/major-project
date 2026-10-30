@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aina AI - Advanced Biometric Face Scanner & Emotional Intelligence Matrix</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        aina: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            900: '#1e3a8a',
+                            neon: '#3b82f6',
+                            cyan: '#06b6d4',
+                            purple: '#6366f1',
+                            dark: '#030712',
+                            card: '#0f172a',
+                            border: '#1e3a8a55'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for cyberpunk icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .animate-scan {
+            animation: scanline 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.5); }
+        }
+        .glow-box {
+            animation: pulseGlow 3s infinite;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e3a8a55;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-aina-dark text-blue-50 font-sans min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
+
+    <header class="border-b border-blue-900/40 bg-aina-card/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <i class="fa-solid fa-eye text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-wider bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent">AINA<span class="text-white">.AI</span></h1>
+                    <p class="text-xs text-blue-300/70 tracking-widest uppercase">Mirror of Biometric & Emotional Soul</p>
+                </div>
+            </div>
+
+            <!-- Tab Navigation Switches -->
+            <div class="hidden md:flex items-center space-x-1 bg-black/50 p-1 rounded-xl border border-blue-900/50">
+                <button id="navScannerTab" class="px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wider uppercase transition bg-blue-600/20 text-blue-400 border border-blue-500/40 shadow-sm flex items-center space-x-2">
+                    <i class="fa-solid fa-face-viewfinder"></i>
+                    <span>Live Biometric Mirror</span>
+                </button>
+                <button id="navMoodTab" class="px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wider uppercase transition text-blue-300/60 hover:text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>Emotional To-Do Matrix</span>
+                </button>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="hidden sm:flex items-center space-x-2 bg-blue-950/40 px-3 py-1.5 rounded-full border border-blue-900/50 text-xs">
+                    <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                    <span class="text-blue-200 font-mono">STATUS: <span class="text-blue-400">ONLINE</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation bar -->
+        <div class="md:hidden flex items-center justify-around border-t border-blue-900/40 bg-black/30 py-2 px-4">
+            <button id="mobileNavScanner" class="text-xs font-semibold uppercase text-blue-400 flex items-center space-x-1.5">
+                <i class="fa-solid fa-face-viewfinder"></i>
+                <span>Mirror Scanner</span>
+            </button>
+            <div class="w-px h-4 bg-blue-900/40"></div>
+            <button id="mobileNavMood" class="text-xs font-semibold uppercase text-blue-300/60 flex items-center space-x-1.5">
+                <i class="fa-solid fa-brain"></i>
+                <span>Emotion Matrix</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- ================= TAB 1: LIVE FACE SCANNER ================= -->
+        <div id="sectionScanner" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- LEFT COLUMN: Webcam / Image Preview and Controls (7 cols) -->
+            <section class="lg:col-span-7 flex flex-col space-y-6">
+                
+                <!-- Video Container Card -->
+                <div class="bg-aina-card border border-blue-900/40 rounded-2xl p-4 sm:p-6 shadow-xl relative overflow-hidden glow-box">
+                    <!-- HUD Corner Accents -->
+                    <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-blue-400 pointer-events-none"></div>
+                    <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-blue-400 pointer-events-none"></div>
+                    <div class="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-blue-400 pointer-events-none"></div>
+                    <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-blue-400 pointer-events-none"></div>
+
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-camera-rotate text-blue-400"></i>
+                            <h2 class="font-semibold tracking-wide text-sm uppercase text-blue-200">Aina Optic Mirror Feed</h2>
+                        </div>
+                        <span id="feedStatus" class="text-xs font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-900">STANDBY</span>
+                    </div>
+
+                    <!-- Viewport Area -->
+                    <div id="viewportContainer" class="relative w-full aspect-[4/3] bg-black rounded-xl overflow-hidden border border-blue-950 flex items-center justify-center">
+                        
+                        <!-- Webcam Element -->
+                        <video id="webcamVideo" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover hidden"></video>
+                        
+                        <!-- Uploaded Image Preview -->
+                        <img id="uploadedImagePreview" class="absolute inset-0 w-full h-full object-cover hidden" alt="Uploaded Face">
+
+                        <!-- Default Placeholder State -->
+                        <div id="placeholderState" class="flex flex-col items-center justify-center text-center p-6 space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-blue-600/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-2xl animate-bounce">
+                                <i class="fa-solid fa-face-viewfinder"></i>
+                            </div>
+                            <p class="text-sm text-blue-300/70 max-w-xs">Initialize Aina mirror feed or upload an image sample to start neural analysis.</p>
+                            <div class="pt-2">
+                                <button id="switchToMoodShortcut" class="text-xs text-blue-400 hover:text-blue-300 underline font-mono">
+                                    Switch to Emotional To-Do Journal &rarr;
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Scanline Overlay -->
+                        <div id="scanLineOverlay" class="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-blue-400 to-transparent shadow-[0_0_15px_#3b82f6] animate-scan hidden pointer-events-none"></div>
+
+                        <!-- Face Bounding Box Overlay -->
+                        <div id="faceBoundingBox" class="absolute border-2 border-blue-400 rounded-lg hidden transition-all duration-300 shadow-[0_0_20px_rgba(59,130,246,0.4)] pointer-events-none" style="width: 180px; height: 220px; top: 20%; left: calc(50% - 90px);">
+                            <div class="absolute -top-3 left-0 bg-blue-500 text-black font-mono text-[10px] px-1.5 py-0.5 font-bold uppercase tracking-wider">Aina Target #01</div>
+                            <div class="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-blue-400"></div>
+                            <div class="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-blue-400"></div>
+                        </div>
+                    </div>
+
+                    <!-- Controls Toolbar -->
+                    <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <button id="toggleCameraBtn" class="flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl bg-blue-950/60 hover:bg-blue-900/60 text-blue-100 border border-blue-800/60 transition font-medium text-sm">
+                            <i class="fa-solid fa-power-off text-blue-400"></i>
+                            <span id="cameraBtnText">Start Mirror Feed</span>
+                        </button>
+                        
+                        <button id="scanFaceBtn" disabled class="flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-600/20 text-sm">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>Scan Soul & Face</span>
+                        </button>
+
+                        <label class="flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl bg-blue-950/60 hover:bg-blue-900/60 text-blue-100 border border-blue-800/60 transition font-medium text-sm cursor-pointer">
+                            <i class="fa-solid fa-upload text-cyan-400"></i>
+                            <span>Upload Sample</span>
+                            <input type="file" id="imageUploadInput" accept="image/*" class="hidden">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Audit Logs -->
+                <div class="bg-aina-card border border-blue-900/40 rounded-2xl p-4 sm:p-6 shadow-xl flex-1">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-clock-rotate-left text-cyan-400"></i>
+                            <h2 class="font-semibold tracking-wide text-sm uppercase text-blue-200">Aina Neural Audit Logs</h2>
+                        </div>
+                        <button id="clearLogsBtn" class="text-xs text-blue-300/60 hover:text-blue-200 underline">Clear</button>
+                    </div>
+                    <div id="auditLogsContainer" class="space-y-2 max-h-48 overflow-y-auto pr-1 font-mono text-xs">
+                        <div class="p-2 rounded bg-black/40 border border-blue-950 flex items-center justify-between text-blue-300/80">
+                            <span>[AINA_INIT] Core neural reflection matrix online. Ready.</span>
+                            <span class="text-[10px] opacity-60">00:00:01</span>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- RIGHT COLUMN: Real-time AI Analytics & Metrics (5 cols) -->
+            <section class="lg:col-span-5 flex flex-col space-y-6">
+                
+                <div class="bg-aina-card border border-blue-900/40 rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex items-center justify-between pb-4 border-b border-blue-950 mb-6">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-atom text-blue-400"></i>
+                                <h2 class="font-semibold tracking-wide text-sm uppercase text-blue-200">Neural Matrix Analysis</h2>
+                            </div>
+                            <span id="analysisBadge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-400 border border-blue-900">AWAITING SCAN</span>
+                        </div>
+
+                        <!-- Metrics Grid -->
+                        <div class="space-y-5">
+                            
+                            <!-- Confidence Score -->
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-mono">
+                                    <span class="text-blue-300/70">SOUL RESONANCE</span>
+                                    <span id="metricConfidence" class="text-blue-400 font-bold">0.0%</span>
+                                </div>
+                                <div class="w-full bg-blue-950 h-2 rounded-full overflow-hidden p-0.5 border border-blue-900/60">
+                                    <div id="barConfidence" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Emotion Detection -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-black/30 p-3 rounded-xl border border-blue-950">
+                                    <p class="text-[10px] font-mono text-blue-300/60 uppercase">Primary Aura</p>
+                                    <p id="metricEmotion" class="text-base font-bold text-blue-100 mt-1 flex items-center space-x-2">
+                                        <i class="fa-solid fa-minus text-blue-500/50"></i>
+                                        <span>--</span>
+                                    </p>
+                                </div>
+                                <div class="bg-black/30 p-3 rounded-xl border border-blue-950">
+                                    <p class="text-[10px] font-mono text-blue-300/60 uppercase">Aina Shield</p>
+                                    <p id="metricLiveness" class="text-base font-bold text-blue-100 mt-1 flex items-center space-x-2">
+                                        <i class="fa-solid fa-shield text-blue-500/50"></i>
+                                        <span>Pending</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Age & Gender Estimation -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-black/30 p-3 rounded-xl border border-blue-950">
+                                    <p class="text-[10px] font-mono text-blue-300/60 uppercase">Estimated Vibe Age</p>
+                                    <p id="metricAge" class="text-base font-bold text-blue-100 mt-1 font-mono">-- yrs</p>
+                                </div>
+                                <div class="bg-black/30 p-3 rounded-xl border border-blue-950">
+                                    <p class="text-[10px] font-mono text-blue-300/60 uppercase">Core Energy</p>
+                                    <p id="metricGender" class="text-base font-bold text-blue-100 mt-1">--</p>
+                                </div>
+                            </div>
+
+                            <!-- Additional Biometric Features -->
+                            <div class="space-y-2 pt-2">
+                                <p class="text-[10px] font-mono text-blue-300/60 uppercase">Facial Geometry & Aura Vectors</p>
+                                <div class="grid grid-cols-3 gap-2 text-center">
+                                    <div class="bg-black/20 p-2 rounded border border-blue-950">
+                                        <span class="text-[10px] text-blue-300/50 block">Angle</span>
+                                        <span id="metricAngle" class="font-mono text-xs text-blue-300">0.0° / 0.0°</span>
+                                    </div>
+                                    <div class="bg-black/20 p-2 rounded border border-blue-950">
+                                        <span class="text-[10px] text-blue-300/50 block">Nodes</span>
+                                        <span class="font-mono text-xs text-cyan-400">128 Points</span>
+                                    </div>
+                                    <div class="bg-black/20 p-2 rounded border border-blue-950">
+                                        <span class="text-[10px] text-blue-300/50 block">Encrypted</span>
+                                        <span id="metricAntiSpoof" class="font-mono text-xs text-indigo-400">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-blue-950 flex items-center justify-between text-xs text-blue-300/60">
+                        <span>Engine: Aina-CNN-v4</span>
+                        <span id="processingTimeTimer" class="font-mono">Latency: 0ms</span>
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- ================= TAB 2: MOOD & EMOTIONAL TO-DO LOG ================= -->
+        <div id="sectionMood" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- LEFT COLUMN: Mood Entry Form & Quick Suggestions (5 cols) -->
+            <section class="lg:col-span-5 flex flex-col space-y-6">
+                <div class="bg-aina-card border border-blue-900/40 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-full blur-2xl pointer-events-none"></div>
+                    
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+                            <i class="fa-solid fa-heart-pulse"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold tracking-wide text-blue-100">Emotional To-Do Matrix</h2>
+                            <p class="text-xs text-blue-300/70">Aina reflection & self-care planner</p>
+                        </div>
+                    </div>
+
+                    <form id="moodForm" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-mono text-blue-300/70 uppercase mb-2">How is your mind feeling right now?</label>
+                            <textarea id="moodTextInput" rows="3" placeholder="e.g., Feeling super creative and motivated to build amazing web apps..." required class="w-full bg-black/40 border border-blue-950 rounded-xl p-3 text-sm text-blue-100 focus:outline-none focus:border-blue-500 transition placeholder:text-blue-500/40 resize-none"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-mono text-blue-300/70 uppercase mb-2">Aura Tag</label>
+                                <select id="moodTagSelect" class="w-full bg-black/40 border border-blue-950 rounded-xl p-2.5 text-xs text-blue-100 focus:outline-none focus:border-blue-500">
+                                    <option value="Inspired">✨ Inspired / Creative</option>
+                                    <option value="Calm">🍃 Calm / Serene</option>
+                                    <option value="Overwhelmed">⚡ Overwhelmed</option>
+                                    <option value="Anxious">🌊 Anxious / Restless</option>
+                                    <option value="Tired">🔋 Tired / Drained</option>
+                                    <option value="Focused">🎯 Focused / Deep Work</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-blue-300/70 uppercase mb-2">Action Priority</label>
+                                <select id="moodPrioritySelect" class="w-full bg-black/40 border border-blue-950 rounded-xl p-2.5 text-xs text-blue-100 focus:outline-none focus:border-blue-500">
+                                    <option value="Normal">Normal Self-Care</option>
+                                    <option value="High">High Urgency</option>
+                                    <option value="Low">Low Priority</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold transition shadow-lg shadow-blue-600/20 text-sm flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-plus-circle"></i>
+                            <span>Reflect & Generate Action Plan</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Stats Card -->
+                <div class="bg-aina-card border border-blue-900/40 rounded-2xl p-6 shadow-xl">
+                    <h3 class="font-semibold text-sm uppercase text-blue-200 mb-4 flex items-center space-x-2">
+                        <i class="fa-solid fa-chart-line text-blue-400"></i>
+                        <span>Aura Statistics</span>
+                    </h3>
+                    <div class="grid grid-cols-3 gap-3 text-center">
+                        <div class="bg-black/30 p-3 rounded-xl border border-blue-950">
+                            <span class="text-[10px] font-mono text-blue-300/60 block uppercase">Total Entries</span>
+                            <span id="statTotalEntries" class="text-xl font-bold text-blue-400 font-mono mt-1 block">0</span>
+                        </div>
+                        <div class="bg-black/30 p-3 rounded-xl border border-blue-950">
+                            <span class="text-[10px] font-mono text-blue-300/60 block uppercase">Open Tasks</span>
+                            <span id="statOpenTasks" class="text-xl font-bold text-amber-400 font-mono mt-1 block">0</span>
+                        </div>
+                        <div class="bg-black/30 p-3 rounded-xl border border-blue-950">
+                            <span class="text-[10px] font-mono text-blue-300/60 block uppercase">Resolved</span>
+                            <span id="statResolvedTasks" class="text-xl font-bold text-emerald-400 font-mono mt-1 block">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT COLUMN: Interactive Mood To-Do List & AI Recommendations (7 cols) -->
+            <section class="lg:col-span-7 flex flex-col space-y-6">
+                <div class="bg-aina-card border border-blue-900/40 rounded-2xl p-6 shadow-xl flex-1 flex flex-col">
+                    <div class="flex items-center justify-between pb-4 border-b border-blue-950 mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-list-check text-blue-400"></i>
+                            <h2 class="font-semibold tracking-wide text-sm uppercase text-blue-200">Emotional To-Do & Action Matrix</h2>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs text-blue-300/60 font-mono" id="taskCountBadge">0 items</span>
+                            <button id="clearAllMoodsBtn" class="text-xs text-rose-400 hover:text-rose-300 underline ml-2">Clear All</button>
+                        </div>
+                    </div>
+
+                    <div id="moodTodoListContainer" class="space-y-3 flex-1 overflow-y-auto pr-1 max-h-[500px]">
+                        <div id="moodEmptyState" class="flex flex-col items-center justify-center text-center py-16 text-blue-300/40 space-y-3">
+                            <div class="w-12 h-12 rounded-full bg-blue-950 flex items-center justify-center text-blue-400 text-lg">
+                                <i class="fa-solid fa-seedling"></i>
+                            </div>
+                            <p class="text-sm">No emotional entries or tasks logged yet. Type how you feel on the left to start.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navScannerTab = document.getElementById('navScannerTab');
+            const navMoodTab = document.getElementById('navMoodTab');
+            const mobileNavScanner = document.getElementById('mobileNavScanner');
+            const mobileNavMood = document.getElementById('mobileNavMood');
+            const sectionScanner = document.getElementById('sectionScanner');
+            const sectionMood = document.getElementById('sectionMood');
+            const switchToMoodShortcut = document.getElementById('switchToMoodShortcut');
+
+            const toggleCameraBtn = document.getElementById('toggleCameraBtn');
+            const cameraBtnText = document.getElementById('cameraBtnText');
+            const webcamVideo = document.getElementById('webcamVideo');
+            const uploadedImagePreview = document.getElementById('uploadedImagePreview');
+            const placeholderState = document.getElementById('placeholderState');
+            const scanFaceBtn = document.getElementById('scanFaceBtn');
+            const imageUploadInput = document.getElementById('imageUploadInput');
+            const scanLineOverlay = document.getElementById('scanLineOverlay');
+            const faceBoundingBox = document.getElementById('faceBoundingBox');
+            const feedStatus = document.getElementById('feedStatus');
+            const analysisBadge = document.getElementById('analysisBadge');
+            const auditLogsContainer = document.getElementById('auditLogsContainer');
+            const clearLogsBtn = document.getElementById('clearLogsBtn');
+
+            const metricConfidence = document.getElementById('metricConfidence');
+            const barConfidence = document.getElementById('barConfidence');
+            const metricEmotion = document.getElementById('metricEmotion');
+            const metricLiveness = document.getElementById('metricLiveness');
+            const metricAge = document.getElementById('metricAge');
+            const metricGender = document.getElementById('metricGender');
+            const metricAngle = document.getElementById('metricAngle');
+            const processingTimeTimer = document.getElementById('processingTimeTimer');
+
+            const moodForm = document.getElementById('moodForm');
+            const moodTextInput = document.getElementById('moodTextInput');
+            const moodTagSelect = document.getElementById('moodTagSelect');
+            const moodPrioritySelect = document.getElementById('moodPrioritySelect');
+            const moodTodoListContainer = document.getElementById('moodTodoListContainer');
+            const moodEmptyState = document.getElementById('moodEmptyState');
+            const statTotalEntries = document.getElementById('statTotalEntries');
+            const statOpenTasks = document.getElementById('statOpenTasks');
+            const statResolvedTasks = document.getElementById('statResolvedTasks');
+            const taskCountBadge = document.getElementById('taskCountBadge');
+            const clearAllMoodsBtn = document.getElementById('clearAllMoodsBtn');
+
+            let mediaStream = null;
+            let isCameraActive = false;
+
+            let moodItems = [
+                {
+                    id: 1,
+                    text: "Feeling inspired to build an extraordinary mirror AI application.",
+                    tag: "Inspired",
+                    priority: "Normal",
+                    sentiment: "Positive",
+                    completed: false,
+                    time: "11:00 AM",
+                    recommendation: "Channel this spark into high-flow creative coding."
+                },
+                {
+                    id: 2,
+                    text: "Slight screen fatigue after hours of debugging.",
+                    tag: "Tired",
+                    priority: "High",
+                    sentiment: "Needs Rest",
+                    completed: false,
+                    time: "11:15 AM",
+                    recommendation: "Close your eyes for 5 minutes and stretch."
+                }
+            ];
+
+            function switchTab(tabName) {
+                if (tabName === 'scanner') {
+                    sectionScanner.classList.remove('hidden');
+                    sectionMood.classList.add('hidden');
+                    
+                    navScannerTab.className = 'px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wider uppercase transition bg-blue-600/20 text-blue-400 border border-blue-500/40 shadow-sm flex items-center space-x-2';
+                    navMoodTab.className = 'px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wider uppercase transition text-blue-300/60 hover:text-white flex items-center space-x-2';
+                    
+                    mobileNavScanner.className = 'text-xs font-semibold uppercase text-blue-400 flex items-center space-x-1.5';
+                    mobileNavMood.className = 'text-xs font-semibold uppercase text-blue-300/60 flex items-center space-x-1.5';
+                } else {
+                    sectionMood.classList.remove('hidden');
+                    sectionScanner.classList.add('hidden');
+                    
+                    navMoodTab.className = 'px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wider uppercase transition bg-indigo-600/20 text-indigo-400 border border-indigo-500/40 shadow-sm flex items-center space-x-2';
+                    navScannerTab.className = 'px-4 py-1.5 rounded-lg text-xs font-semibold tracking-wider uppercase transition text-blue-300/60 hover:text-white flex items-center space-x-2';
+                    
+                    mobileNavMood.className = 'text-xs font-semibold uppercase text-indigo-400 flex items-center space-x-1.5';
+                    mobileNavScanner.className = 'text-xs font-semibold uppercase text-blue-300/60 flex items-center space-x-1.5';
+
+                    if (isCameraActive) stopCamera();
+                    renderMoodList();
+                }
+            }
+
+            navScannerTab.addEventListener('click', () => switchTab('scanner'));
+            navMoodTab.addEventListener('click', () => switchTab('mood'));
+            mobileNavScanner.addEventListener('click', () => switchTab('scanner'));
+            mobileNavMood.addEventListener('click', () => switchTab('mood'));
+            switchToMoodShortcut.addEventListener('click', () => switchTab('mood'));
+
+            function addAuditLog(message, type = 'info') {
+                const timeStr = new Date().toTimeString().split(' ')[0];
+                const logDiv = document.createElement('div');
+                logDiv.className = 'p-2 rounded bg-black/40 border border-blue-950 flex items-center justify-between text-blue-200';
+                
+                let colorClass = 'text-blue-400';
+                if (type === 'success') colorClass = 'text-emerald-400';
+                if (type === 'warn') colorClass = 'text-amber-400';
+
+                logDiv.innerHTML = `<span class="${colorClass}">[${type.toUpperCase()}] ${message}</span><span class="text-[10px] opacity-60">${timeStr}</span>`;
+                auditLogsContainer.prepend(logDiv);
+            }
+
+            toggleCameraBtn.addEventListener('click', async () => {
+                if (!isCameraActive) {
+                    try {
+                        mediaStream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } } });
+                        webcamVideo.srcObject = mediaStream;
+                        webcamVideo.classList.remove('hidden');
+                        uploadedImagePreview.classList.add('hidden');
+                        placeholderState.classList.add('hidden');
+                        faceBoundingBox.classList.remove('hidden');
+
+                        isCameraActive = true;
+                        cameraBtnText.textContent = 'Stop Mirror Feed';
+                        toggleCameraBtn.querySelector('i').className = 'fa-solid fa-power-off text-rose-500';
+                        
+                        feedStatus.textContent = 'LIVE FEED';
+                        feedStatus.className = 'text-xs font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                        scanFaceBtn.removeAttribute('disabled');
+
+                        addAuditLog('Aina optic mirror feed initialized successfully.', 'success');
+                    } catch (err) {
+                        console.error('Camera access error:', err);
+                        addAuditLog('Failed to access camera hardware. Check permissions.', 'warn');
+                    }
+                } else {
+                    stopCamera();
+                }
+            });
+
+            function stopCamera() {
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(track => track.stop());
+                    mediaStream = null;
+                }
+                webcamVideo.classList.add('hidden');
+                faceBoundingBox.classList.add('hidden');
+                placeholderState.classList.remove('hidden');
+                
+                isCameraActive = false;
+                cameraBtnText.textContent = 'Start Mirror Feed';
+                toggleCameraBtn.querySelector('i').className = 'fa-solid fa-power-off text-blue-400';
+                
+                feedStatus.textContent = 'STANDBY';
+                feedStatus.className = 'text-xs font-mono px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-900';
+                scanFaceBtn.setAttribute('disabled', 'true');
+
+                addAuditLog('Aina mirror feed terminated.', 'info');
+            }
+
+            imageUploadInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (isCameraActive) stopCamera();
+
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        uploadedImagePreview.src = event.target.result;
+                        uploadedImagePreview.classList.remove('hidden');
+                        placeholderState.classList.add('hidden');
+                        faceBoundingBox.classList.remove('hidden');
+                        
+                        feedStatus.textContent = 'SAMPLE LOADED';
+                        feedStatus.className = 'text-xs font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30';
+                        scanFaceBtn.removeAttribute('disabled');
+
+                        addAuditLog(`Loaded sample image: ${file.name}`, 'success');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            scanFaceBtn.addEventListener('click', () => {
+                scanFaceBtn.setAttribute('disabled', 'true');
+                scanLineOverlay.classList.remove('hidden');
+                analysisBadge.textContent = 'SCANNING SOUL...';
+                analysisBadge.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-blue-600/20 text-blue-300 border border-blue-500/30 animate-pulse';
+
+                addAuditLog('Initiated Aina neural biometric & aura scan...', 'info');
+
+                let startTime = performance.now();
+
+                setTimeout(() => {
+                    scanLineOverlay.classList.add('hidden');
+                    scanFaceBtn.removeAttribute('disabled');
+
+                    const confidence = (Math.random() * (99.6 - 93.0) + 93.0).toFixed(1);
+                    const emotions = [
+                        { name: 'Serene Blue Radiance', icon: 'fa-face-smile text-blue-400' },
+                        { name: 'Deep Blue Focus', icon: 'fa-face-grin-stars text-cyan-400' },
+                        { name: 'Cyber Aura', icon: 'fa-face-laugh-beam text-indigo-400' }
+                    ];
+                    const selectedEmotion = emotions[Math.floor(Math.random() * emotions.length)];
+                    const age = Math.floor(Math.random() * (35 - 20 + 1)) + 20;
+                    const gender = Math.random() > 0.5 ? 'Intuitive / Balanced' : 'Dynamic / Focused';
+                    const yaw = (Math.random() * 3 - 1.5).toFixed(1);
+                    const pitch = (Math.random() * 3 - 1.5).toFixed(1);
+                    const latency = Math.floor(performance.now() - startTime);
+
+                    metricConfidence.textContent = `${confidence}%`;
+                    barConfidence.style.width = `${confidence}%`;
+                    
+                    metricEmotion.innerHTML = `<i class="fa-solid ${selectedEmotion.icon}"></i><span>${selectedEmotion.name}</span>`;
+                    metricLiveness.innerHTML = `<i class="fa-solid fa-shield-heart text-blue-400"></i><span class="text-blue-400">Verified Soul</span>`;
+                    metricAge.textContent = `${age} yrs`;
+                    metricGender.textContent = gender;
+                    metricAngle.textContent = `${yaw}° / ${pitch}°`;
+                    processingTimeTimer.textContent = `Latency: ${latency}ms`;
+
+                    analysisBadge.textContent = 'ANALYSIS COMPLETE';
+                    analysisBadge.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+
+                    addAuditLog(`Aura scan completed. Resonance: ${confidence}% | Aura: ${selectedEmotion.name}`, 'success');
+                }, 2000);
+            });
+
+            clearLogsBtn.addEventListener('click', () => {
+                auditLogsContainer.innerHTML = '';
+                addAuditLog('Audit logs cleared by operator.', 'info');
+            });
+
+            function getRecommendationByTag(tag) {
+                switch(tag) {
+                    case 'Inspired': return 'Channel this inspiration into building your main project.';
+                    case 'Calm': return 'Maintain your peace with slow, deliberate breathing.';
+                    case 'Overwhelmed': return 'Break your current task into 3 tiny, achievable chunks.';
+                    case 'Anxious': return 'Ground yourself by naming 3 things you can touch right now.';
+                    case 'Tired': return 'Step away from the screen and drink water.';
+                    case 'Focused': return 'Put on deep work instrumental music and sprint for 25 minutes.';
+                    default: return 'Take a mindful check-in with your posture and hydration.';
+                }
+            }
+
+            function getSentimentByTag(tag) {
+                if (['Inspired', 'Calm', 'Focused'].includes(tag)) return 'Positive';
+                if (['Overwhelmed', 'Anxious', 'Tired'].includes(tag)) return 'Needs Attention';
+                return 'Balanced';
+            }
+
+            moodForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const text = moodTextInput.value.trim();
+                const tag = moodTagSelect.value;
+                const priority = moodPrioritySelect.value;
+
+                if (!text) return;
+
+                const newItem = {
+                    id: Date.now(),
+                    text: text,
+                    tag: tag,
+                    priority: priority,
+                    sentiment: getSentimentByTag(tag),
+                    completed: false,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    recommendation: getRecommendationByTag(tag)
+                };
+
+                moodItems.unshift(newItem);
+                moodTextInput.value = '';
+                renderMoodList();
+                addAuditLog(`New Aina emotional journal entry logged [Tag: ${tag}]`, 'success');
+            });
+
+            window.toggleMoodTask = function(id) {
+                const item = moodItems.find(i => i.id === id);
+                if (item) {
+                    item.completed = !item.completed;
+                    renderMoodList();
+                }
+            };
+
+            window.deleteMoodTask = function(id) {
+                moodItems = moodItems.filter(i => i.id !== id);
+                renderMoodList();
+            };
+
+            clearAllMoodsBtn.addEventListener('click', () => {
+                moodItems = [];
+                renderMoodList();
+                addAuditLog('Cleared all emotional matrix items.', 'info');
+            });
+
+            function renderMoodList() {
+                moodTodoListContainer.innerHTML = '';
+                
+                const total = moodItems.length;
+                const open = moodItems.filter(i => !i.completed).length;
+                const resolved = moodItems.filter(i => i.completed).length;
+
+                statTotalEntries.textContent = total;
+                statOpenTasks.textContent = open;
+                statResolvedTasks.textContent = resolved;
+                taskCountBadge.textContent = `${total} items`;
+
+                if (total === 0) {
+                    moodEmptyState.classList.remove('hidden');
+                    return;
+                }
+
+                moodEmptyState.classList.add('hidden');
+
+                moodItems.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = `p-4 rounded-xl border transition-all ${item.completed ? 'bg-black/20 border-blue-950 opacity-60 line-through' : 'bg-black/40 border-blue-950 hover:border-blue-500/40'}`;
+
+                    let tagColor = 'bg-blue-600/20 text-blue-300 border-blue-500/30';
+                    if (item.tag === 'Overwhelmed' || item.tag === 'Anxious') tagColor = 'bg-rose-500/20 text-rose-300 border-rose-500/30';
+                    if (item.tag === 'Inspired') tagColor = 'bg-indigo-600/20 text-indigo-300 border-indigo-500/30';
+                    if (item.tag === 'Tired') tagColor = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+                    if (item.tag === 'Focused') tagColor = 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30';
+
+                    card.innerHTML = `
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-start space-x-3 flex-1">
+                                <input type="checkbox" ${item.completed ? 'checked' : ''} onclick="toggleMoodTask(${item.id})" class="mt-1 w-4 h-4 rounded border-blue-900 bg-black text-blue-600 focus:ring-blue-500 cursor-pointer">
+                                <div class="space-y-1 flex-1">
+                                    <p class="text-sm text-blue-100 font-medium">${item.text}</p>
+                                    <div class="flex flex-wrap items-center gap-2 pt-1">
+                                        <span class="text-[10px] font-mono px-2 py-0.5 rounded border ${tagColor}">${item.tag}</span>
+                                        <span class="text-[10px] font-mono text-blue-300/70 bg-blue-950 px-2 py-0.5 rounded">Priority: ${item.priority}</span>
+                                        <span class="text-[10px] font-mono text-indigo-300"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>${item.recommendation}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[10px] font-mono text-blue-300/50">${item.time}</span>
+                                <button onclick="deleteMoodTask(${item.id})" class="text-blue-300/50 hover:text-rose-400 p-1 transition"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                            </div>
+                        </div>
+                    `;
+                    moodTodoListContainer.appendChild(card);
+                });
+            }
+
+            renderMoodList();
+        });
+    </script>
+
+</body>
+</html>
